@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Darker - Color Adjuster</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>Darker</header>
+  <div id="tabs">
+    <button class="tab-button active" data-tab="colors-tab">Colors</button>
+    <button class="tab-button" data-tab="saved-sites-tab">Saved Sites</button>
+  </div>
+  <div id="container">
+    <!-- Colors Tab -->
+    <div id="colors-tab" class="tab-content active">
+      <div id="message">Looking for white colors...</div>
+      <div id="colors"></div>
+    </div>
+    
+    <!-- Saved Sites Tab -->
+    <div id="saved-sites-tab" class="tab-content">
+      <div id="sites-message">Loading saved sites...</div>
+      <div id="saved-sites-list"></div>
+      <div id="sites-controls">
+        <button id="delete-all-button">Delete All Sites</button>
+      </div>
+    </div>
+    
+    <div id="status" class="status"></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
