@@ -210,7 +210,51 @@ document.addEventListener('DOMContentLoaded', () => {
         // Hide the message
         messageDiv.style.display = 'none';
         
-        // Display each element
+        // Add a filtering interface
+        const filterDiv = document.createElement('div');
+        filterDiv.className = 'filter-controls';
+        
+        const filterLabel = document.createElement('label');
+        filterLabel.textContent = 'Show: ';
+        
+        const filterSelect = document.createElement('select');
+        filterSelect.id = 'type-filter';
+        
+        // Add filter options
+        const options = [
+          { value: 'all', text: 'All Elements' },
+          { value: 'body', text: 'Body Elements' },
+          { value: 'variable', text: 'CSS Variables' },
+          { value: 'domain-specific', text: 'Page Elements' },
+          { value: 'stylesheet', text: 'Stylesheet Rules' }
+        ];
+        
+        options.forEach(opt => {
+          const option = document.createElement('option');
+          option.value = opt.value;
+          option.textContent = opt.text;
+          filterSelect.appendChild(option);
+        });
+        
+        // Handle filter changes
+        filterSelect.addEventListener('change', (e) => {
+          const filter = e.target.value;
+          const items = document.querySelectorAll('.color-item');
+          
+          items.forEach(item => {
+            if (filter === 'all' || item.dataset.type === filter) {
+              item.style.display = 'flex';
+            } else {
+              item.style.display = 'none';
+            }
+          });
+        });
+        
+        filterDiv.appendChild(filterLabel);
+        filterDiv.appendChild(filterSelect);
+        colorsDiv.appendChild(filterDiv);
+        
+        // Display each element 
         elements.forEach(element => {
           const itemDiv = document.createElement('div');
           itemDiv.className = 'color-item';
@@ -220,14 +264,34 @@ document.addEventListener('DOMContentLoaded', () => {
             itemDiv.classList.add('saved');
           }
           
+          // Add a data attribute for sorting/filtering
+          itemDiv.dataset.type = element.type;
+          
           // Create label
           const nameSpan = document.createElement('span');
           nameSpan.className = 'color-name';
           
+          // Set appropriate display text based on element type
           if (element.type === 'variable') {
             nameSpan.textContent = `Variable: ${element.name}`;
           } else if (element.type === 'body') {
             nameSpan.textContent = `Body: ${element.property}`;
+          } else if (element.type === 'domain-specific') {
+            const selector = element.selector || '';
+            const shortSelector = selector.length > 15 ? selector.substring(0, 12) + '...' : selector;
+            nameSpan.textContent = `Element: ${shortSelector} (${element.property})`;
+          } else if (element.type === 'stylesheet') {
+            // Use the displayName property if available, otherwise create a reasonable name
+            if (element.displayName) {
+              nameSpan.textContent = `Style: ${element.displayName}`;
+            } else {
+              const selector = element.selector || '';
+              const shortSelector = selector.length > 15 ? selector.substring(0, 12) + '...' : selector;
+              nameSpan.textContent = `Style: ${shortSelector} (${element.property})`;
+            }
+          } else {
+            // Fallback for any other type
+            nameSpan.textContent = `${element.type}: ${element.property || ''}`;
           }
           
           // Create color picker
